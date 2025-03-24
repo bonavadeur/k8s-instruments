@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dynamic-pvc
+spec:
+  storageClassName: dynamic-pvc
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 25Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dynamic-pvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dynamic-pvc
+  template:
+    metadata:
+      labels:
+        app: dynamic-pvc
+    spec:
+      containers:
+        - name: dynamic-pvc
+          image: docker.io/ljishen/fio:3.6
+          volumeMounts:
+          - mountPath: "/shared"
+            name: shared-volume
+          command: [ '/bin/sh', '-c', 'sleep 1000' ]
+      volumes:
+        - name: shared-volume
+          persistentVolumeClaim:
+            claimName: dynamic-pvc
