@@ -1,0 +1,33 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: hello
+  namespace: default
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/max-scale: '1'
+        autoscaling.knative.dev/min-scale: '1'
+        autoscaling.knative.dev/scale-to-zero-pod-retention-period: 0s
+        autoscaling.knative.dev/target: '10'
+        autoscaling.knative.dev/target-burst-capacity: '-1'
+        autoscaling.knative.dev/window: 12s
+    spec:
+      containerConcurrency: 0
+      containers:
+      - name: user-container
+        image: docker.io/bonavadeur/shuka:v1.3
+        env:
+        - name: TARGET
+          value: Ohayou
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+  traffic:
+    - latestRevision: true
+      percent: 100
