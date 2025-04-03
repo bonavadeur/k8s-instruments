@@ -1,0 +1,22 @@
+# fio --randrepeat=1 --ioengine=libaio --direct=1 --gtod_reduce=1 --name=fiotest --filename=/tmp/testfio --bs=4M --iodepth=64 --size=10G
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ephemeral-storage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ephemeral-storage
+  template:
+    metadata:
+      labels:
+        app: ephemeral-storage
+    spec:
+      containers:
+        - name: ephemeral-storage
+          image: docker.io/ljishen/fio:3.6
+          resources:
+            limits:
+              ephemeral-storage: "12Gi"
+          command: [ '/bin/sh', '-c', 'sleep 1000' ]
