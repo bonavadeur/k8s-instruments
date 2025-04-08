@@ -17,7 +17,7 @@ spec:
       containerConcurrency: 0
       containers:
       - name: user-container
-        image: docker.io/bonavadeur/shuka:v1.3
+        image: docker.io/bonavadeur/shuka:v1.4
         env:
         - name: TARGET
           value: Ohayou
